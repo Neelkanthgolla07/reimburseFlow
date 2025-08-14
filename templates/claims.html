@@ -1,0 +1,481 @@
+{% extends "base.html" %}
+
+{% block title %}View Claims - ReimburseFlow{% endblock %}
+
+{% block content %}
+<div class="px-4 py-6 sm:px-0" x-data="claimsView()">
+    <!-- Header -->
+    <div class="mb-8">
+        <div class="flex justify-between items-center">
+            <div>
+                <h2 class="text-3xl font-bold text-gray-900 mb-2">Reimbursement Claims</h2>
+                <p class="text-gray-600">View and manage all submitted reimbursement claims</p>
+            </div>
+            <a href="/" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-150">
+                <i class="fas fa-plus mr-2"></i>New Claim
+            </a>
+        </div>
+    </div>
+
+    <!-- Filters and Search -->
+    <div class="bg-white custom-shadow rounded-lg p-6 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Search</label>
+                <input type="text" x-model="searchTerm" @input="filterClaims" placeholder="Search by employee, department..."
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                <select x-model="statusFilter" @change="filterClaims"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">All Statuses</option>
+                    <option value="pending">Pending</option>
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
+                    <option value="partially_approved">Partially Approved</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Department</label>
+                <select x-model="departmentFilter" @change="filterClaims"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">All Departments</option>
+                    <option value="Sales">Sales</option>
+                    <option value="Marketing">Marketing</option>
+                    <option value="Engineering">Engineering</option>
+                    <option value="HR">HR</option>
+                    <option value="Finance">Finance</option>
+                    <option value="Operations">Operations</option>
+                </select>
+            </div>
+            <div class="flex items-end">
+                <button @click="refreshClaims" class="w-full bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition duration-150">
+                    <i class="fas fa-refresh mr-2"></i>Refresh
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Claims Summary Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white custom-shadow rounded-lg p-6">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-file-alt text-blue-500"></i>
+                    </div>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-500">Total Claims</p>
+                    <p class="text-2xl font-semibold text-gray-900" x-text="claims.length"></p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white custom-shadow rounded-lg p-6">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <div class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-clock text-yellow-500"></i>
+                    </div>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-500">Pending</p>
+                    <p class="text-2xl font-semibold text-gray-900" x-text="getSummary().pending"></p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white custom-shadow rounded-lg p-6">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-check text-green-500"></i>
+                    </div>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-500">Approved</p>
+                    <p class="text-2xl font-semibold text-gray-900" x-text="getSummary().approved"></p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white custom-shadow rounded-lg p-6">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-times text-red-500"></i>
+                    </div>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-500">Rejected</p>
+                    <p class="text-2xl font-semibold text-gray-900" x-text="getSummary().rejected"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Claims Table -->
+    <div class="bg-white custom-shadow rounded-lg overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h3 class="text-lg font-medium text-gray-900">Claims List</h3>
+        </div>
+        
+        <div x-show="filteredClaims.length === 0" class="p-6 text-center text-gray-500">
+            <i class="fas fa-inbox text-4xl mb-4"></i>
+            <p class="text-lg">No claims found</p>
+            <p class="text-sm">Try adjusting your filters or submit a new claim</p>
+        </div>
+
+        <div x-show="filteredClaims.length > 0" class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Claim ID</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Purpose</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bills</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Amount</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <template x-for="(claim, index) in filteredClaims" :key="index">
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-mono text-blue-600" x-text="claim.id"></div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900" x-text="claim.employee_details.form_filled_by"></div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900" x-text="claim.employee_details.department"></div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="text-sm text-gray-900 max-w-xs truncate" x-text="claim.claim_details.purpose"></div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900" x-text="claim.bills.length + ' bill(s)'"></div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900" x-text="'INR ' + getTotalAmount(claim.bills)"></div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span x-text="claim.overall_status" 
+                                      :class="{
+                                          'bg-yellow-100 text-yellow-800': claim.overall_status === 'pending',
+                                          'bg-green-100 text-green-800': claim.overall_status === 'approved',
+                                          'bg-red-100 text-red-800': claim.overall_status === 'rejected',
+                                          'bg-blue-100 text-blue-800': claim.overall_status === 'partially_approved'
+                                      }"
+                                      class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"></span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <div x-text="formatDate(claim.timestamp)"></div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <button @click="viewClaimDetails(claim)" class="text-blue-600 hover:text-blue-900 mr-3">
+                                    <i class="fas fa-eye"></i> View
+                                </button>
+                                <button @click="deleteClaim(claim.id)" class="text-red-600 hover:text-red-900">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Claim Details Modal -->
+    <div x-show="showClaimModal" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50" style="display: none;">
+        <div class="relative top-10 mx-auto p-5 border w-11/12 max-w-6xl shadow-lg rounded-md bg-white mb-10">
+            <div class="mt-3">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h3 class="text-lg font-medium text-gray-900">Claim Details</h3>
+                        <p class="text-sm text-gray-500 font-mono" x-text="'ID: ' + (selectedClaim?.id || '')"></p>
+                    </div>
+                    <button @click="showClaimModal = false" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <div x-show="selectedClaim" class="space-y-6">
+                    <!-- Employee Information -->
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h4 class="font-medium text-gray-900 mb-3">Employee Information</h4>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+                            <div>
+                                <span class="text-gray-500">Name:</span>
+                                <div x-text="selectedClaim?.employee_details.form_filled_by"></div>
+                            </div>
+                            <div>
+                                <span class="text-gray-500">Department:</span>
+                                <div x-text="selectedClaim?.employee_details.department"></div>
+                            </div>
+                            <div>
+                                <span class="text-gray-500">HOD:</span>
+                                <div x-text="selectedClaim?.employee_details.hod"></div>
+                            </div>
+                            <div>
+                                <span class="text-gray-500">Payment Mode:</span>
+                                <div x-text="selectedClaim?.employee_details.mode_of_payment"></div>
+                            </div>
+                            <div class="md:col-span-2">
+                                <span class="text-gray-500">CC Emails:</span>
+                                <div x-text="selectedClaim?.employee_details.cc_emails.join(', ') || 'None'"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Claim Information -->
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h4 class="font-medium text-gray-900 mb-3">Claim Information</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <span class="text-gray-500">Category:</span>
+                                <div x-text="selectedClaim?.claim_details.transaction_category"></div>
+                            </div>
+                            <div>
+                                <span class="text-gray-500">Product:</span>
+                                <div x-text="selectedClaim?.claim_details.product"></div>
+                            </div>
+                            <div>
+                                <span class="text-gray-500">Cluster:</span>
+                                <div x-text="selectedClaim?.claim_details.cluster"></div>
+                            </div>
+                            <div>
+                                <span class="text-gray-500">People Involved:</span>
+                                <div x-text="selectedClaim?.claim_details.people_involved.join(', ') || 'None'"></div>
+                            </div>
+                            <div class="md:col-span-2">
+                                <span class="text-gray-500">Purpose:</span>
+                                <div x-text="selectedClaim?.claim_details.purpose"></div>
+                            </div>
+                            <div class="md:col-span-2" x-show="selectedClaim?.claim_details.remarks">
+                                <span class="text-gray-500">Remarks:</span>
+                                <div x-text="selectedClaim?.claim_details.remarks"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bills Information -->
+                    <div class="space-y-4">
+                        <h4 class="font-medium text-gray-900">Bills Information</h4>
+                        <template x-for="(bill, index) in selectedClaim?.bills || []" :key="index">
+                            <div class="border rounded-lg p-4">
+                                <div class="flex justify-between items-start mb-3">
+                                    <h5 class="font-medium text-gray-800" x-text="'Bill #' + (index + 1)"></h5>
+                                    <span x-text="bill.approval_status"
+                                          :class="{
+                                              'bg-yellow-100 text-yellow-800': bill.approval_status === 'pending' || bill.approval_status === 'needs_review',
+                                              'bg-green-100 text-green-800': bill.approval_status === 'approved',
+                                              'bg-red-100 text-red-800': bill.approval_status === 'rejected'
+                                          }"
+                                          class="px-2 py-1 rounded-full text-xs font-medium"></span>
+                                </div>
+                                
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                                    <div>
+                                        <span class="text-gray-500">Bill Number:</span>
+                                        <div x-text="bill.bill_number || 'N/A'"></div>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-500">Date:</span>
+                                        <div x-text="bill.bill_date || 'N/A'"></div>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-500">Vendor:</span>
+                                        <div x-text="bill.vendor_name || 'N/A'"></div>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-500">Amount:</span>
+                                        <div x-text="bill.currency + ' ' + bill.amount" class="font-medium"></div>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-500">Category:</span>
+                                        <div x-text="bill.transaction_category"></div>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-500">Purpose:</span>
+                                        <div x-text="bill.purpose"></div>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-500">Product:</span>
+                                        <div x-text="bill.product"></div>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-500">Location:</span>
+                                        <div x-text="bill.cluster_location || 'N/A'"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Flags and Warnings -->
+                                <div x-show="bill.needs_review || bill.change_flag || bill.duplicate_detected" class="mt-3 pt-3 border-t">
+                                    <div class="text-xs space-y-1">
+                                        <div x-show="bill.needs_review" class="flex items-center text-yellow-600">
+                                            <i class="fas fa-exclamation-triangle mr-2"></i>
+                                            Needs Review: Low OCR confidence
+                                        </div>
+                                        <div x-show="bill.change_flag" class="flex items-center text-blue-600">
+                                            <i class="fas fa-edit mr-2"></i>
+                                            Change Detected: Manual entry differs from OCR
+                                        </div>
+                                        <div x-show="bill.duplicate_detected" class="flex items-center text-red-600">
+                                            <i class="fas fa-copy mr-2"></i>
+                                            Possible Duplicate: Similar bill found
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- No Bill Comments -->
+                                <div x-show="bill.bill_type === 'no_bill'" class="mt-3 pt-3 border-t">
+                                    <div class="text-sm">
+                                        <span class="text-gray-500">Comments:</span>
+                                        <div x-text="bill.comments" class="mt-1 p-2 bg-yellow-50 rounded"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Summary -->
+                    <div class="bg-blue-50 rounded-lg p-4">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h4 class="font-medium text-gray-900">Total Amount</h4>
+                                <div class="text-2xl font-bold text-blue-600" x-text="'INR ' + getTotalAmount(selectedClaim?.bills || [])"></div>
+                            </div>
+                            <div class="text-right">
+                                <h4 class="font-medium text-gray-900">Overall Status</h4>
+                                <span x-text="selectedClaim?.overall_status" 
+                                      :class="{
+                                          'bg-yellow-100 text-yellow-800': selectedClaim?.overall_status === 'pending',
+                                          'bg-green-100 text-green-800': selectedClaim?.overall_status === 'approved',
+                                          'bg-red-100 text-red-800': selectedClaim?.overall_status === 'rejected',
+                                          'bg-blue-100 text-blue-800': selectedClaim?.overall_status === 'partially_approved'
+                                      }"
+                                      class="px-3 py-1 rounded-full text-sm font-medium"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end">
+                        <button @click="showClaimModal = false" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function claimsView() {
+    return {
+        claims: {{ claims | tojsonfilter | safe }},
+        filteredClaims: [],
+        searchTerm: '',
+        statusFilter: '',
+        departmentFilter: '',
+        showClaimModal: false,
+        selectedClaim: null,
+
+        init() {
+            this.filteredClaims = this.claims;
+        },
+
+        filterClaims() {
+            let filtered = this.claims;
+
+            if (this.searchTerm) {
+                const term = this.searchTerm.toLowerCase();
+                filtered = filtered.filter(claim => 
+                    claim.employee_details.form_filled_by.toLowerCase().includes(term) ||
+                    claim.employee_details.department.toLowerCase().includes(term) ||
+                    claim.claim_details.purpose.toLowerCase().includes(term)
+                );
+            }
+
+            if (this.statusFilter) {
+                filtered = filtered.filter(claim => claim.overall_status === this.statusFilter);
+            }
+
+            if (this.departmentFilter) {
+                filtered = filtered.filter(claim => claim.employee_details.department === this.departmentFilter);
+            }
+
+            this.filteredClaims = filtered;
+        },
+
+        getSummary() {
+            return {
+                pending: this.claims.filter(c => c.overall_status === 'pending').length,
+                approved: this.claims.filter(c => c.overall_status === 'approved').length,
+                rejected: this.claims.filter(c => c.overall_status === 'rejected').length,
+                partially_approved: this.claims.filter(c => c.overall_status === 'partially_approved').length
+            };
+        },
+
+        getTotalAmount(bills) {
+            return bills.reduce((total, bill) => total + (bill.amount || 0), 0).toFixed(2);
+        },
+
+        formatDate(timestamp) {
+            if (!timestamp) return 'N/A';
+            return new Date(timestamp).toLocaleDateString('en-IN', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        },
+
+        viewClaimDetails(claim) {
+            this.selectedClaim = claim;
+            this.showClaimModal = true;
+        },
+
+        async refreshClaims() {
+            try {
+                const response = await fetch('/api/claims');
+                const data = await response.json();
+                this.claims = data;
+                this.filterClaims();
+                showNotification('Claims refreshed successfully', 'success');
+            } catch (error) {
+                showNotification('Error refreshing claims: ' + error.message, 'error');
+            }
+        },
+
+        async deleteClaim(claimId) {
+            if (!confirm('Are you sure you want to delete this claim? This action cannot be undone.')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/claims/${claimId}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showNotification('Claim deleted successfully', 'success');
+                    await this.refreshClaims();
+                } else {
+                    showNotification('Error deleting claim: ' + result.error, 'error');
+                }
+            } catch (error) {
+                showNotification('Network error: ' + error.message, 'error');
+            }
+        }
+    }
+}
+</script>
+{% endblock %}
