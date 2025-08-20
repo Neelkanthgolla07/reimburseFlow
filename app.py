@@ -9,10 +9,14 @@ from werkzeug.utils import secure_filename
 import google.generativeai as genai
 from PIL import Image
 import io
+from dotenv import load_dotenv
 import config
 import firebase_admin
 from firebase_admin import credentials, auth
 from functools import wraps
+
+# Load environment variables
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)

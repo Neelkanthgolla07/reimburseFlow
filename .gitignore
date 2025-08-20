@@ -3,6 +3,12 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Environment variables and secrets
+.env
+firebase_credentials.json
+*.key
+*.pem
+
 # C extensions
 *.so
 
