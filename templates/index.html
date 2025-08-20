@@ -47,9 +47,11 @@
                     <label class="block text-sm font-medium text-gray-700 mb-2">Payment Mode *</label>
                     <select x-model="formData.payment_mode" required
                             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                        <option value="Bank Transfer">Bank Transfer</option>
-                        <option value="Cheque">Cheque</option>
-                        <option value="Cash">Cash</option>
+                        <option value="">Select Expense Category</option>
+                        <option value="Reimbursement">Reimbursement</option>
+                        <option value="Petty Cash">Petty Cash</option>
+                        <option value="Happay Cash">Happay Cash</option>
+                        <option value="Happay Card">Happay Card</option>
                     </select>
                 </div>
             </div>
@@ -127,13 +129,12 @@
                                 <select x-model="transaction.transaction_category" required
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                                     <option value="">Select Transaction Category</option>
-                                    <option value="Travel">Travel</option>
                                     <option value="Food">Food</option>
-                                    <option value="Office Supplies">Office Supplies</option>
-                                    <option value="Software">Software</option>
-                                    <option value="Training">Training</option>
-                                    <option value="Entertainment">Entertainment</option>
-                                    <option value="Other">Other</option>
+                                    <option value="Travel">Travel</option>
+                                    <option value="Accommodation">Accommodation</option>
+                                    <option value="Others">Others</option>
+                                    <option value="Fuel">Fuel</option>
+                                    <option value="Forex">Forex</option>
                                 </select>
                             </div>
 
@@ -153,12 +154,19 @@
                                 <select x-model="transaction.product" required
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                                     <option value="">Select Product</option>
-                                    <option value="Sales Outreach">Sales Outreach</option>
-                                    <option value="Marketing Campaign">Marketing Campaign</option>
-                                    <option value="Product Development">Product Development</option>
-                                    <option value="Customer Support">Customer Support</option>
-                                    <option value="General Operations">General Operations</option>
-                                    <option value="Other">Other</option>
+                                    <option value="Academy Online">Academy Online</option>
+                                    <option value="Academy College Plus">Academy College Plus</option>
+                                    <option value="Intensive Online">Intensive Online</option>
+                                    <option value="Intensive College Plus">Intensive College Plus</option>
+                                    <option value="NIAT Asset (Batch 1 & 2)">NIAT Asset (Batch 1 & 2)</option>
+                                    <option value="NIAT Asset (Batch 3)">NIAT Asset (Batch 3)</option>
+                                    <option value="NIAT Asset Lite (Batch 3)">NIAT Asset Lite (Batch 3)</option>
+                                    <option value="NIAT Application">NIAT Application</option>
+                                    <option value="NIAT DS Transport">NIAT DS Transport</option>
+                                    <option value="NxtWave Abroad Service">NxtWave Abroad Service</option>
+                                    <option value="NxtWave Abroad Commission">NxtWave Abroad Commission</option>
+                                    <option value="Topin.tech">Topin.tech</option>
+                                    <option value="Common">Common</option>
                                 </select>
                             </div>
 
@@ -168,12 +176,9 @@
                                 <select x-model="transaction.cluster" required
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                                     <option value="">Select Location</option>
-                                    <option value="Hyderabad Cluster">Hyderabad Cluster</option>
-                                    <option value="Bangalore Cluster">Bangalore Cluster</option>
-                                    <option value="Chennai Cluster">Chennai Cluster</option>
-                                    <option value="Mumbai Cluster">Mumbai Cluster</option>
-                                    <option value="Delhi Cluster">Delhi Cluster</option>
-                                    <option value="Remote">Remote</option>
+                                    <option value="Hyderabad Brigade Towers">Hyderabad Brigade Towers</option>
+                                    <option value="Hyderabad Kapil Kavuri Hub">Hyderabad Kapil Kavuri Hub</option>
+                                    <option value="All Others Locations">All Others Locations</option>
                                 </select>
                             </div>
                             <div class="md:col-span-2">
@@ -258,7 +263,7 @@ function claimForm() {
             hod: '{% if employee_details %}{{ employee_details.hod_name }}{% endif %}',
             hod_email: '{% if employee_details %}{{ employee_details.hod_email }}{% endif %}',
             cc_emails: '{% if employee_details %}{% if employee_details.reporting_2_email %}{{ employee_details.reporting_2_email }}{% endif %}{% if employee_details.reporting_3_email %}{% if employee_details.reporting_2_email %},{% endif %}{{ employee_details.reporting_3_email }}{% endif %}{% endif %}',
-            payment_mode: 'Bank Transfer'
+            payment_mode: 'Reimbursement'
         },
         transactions: [
             {

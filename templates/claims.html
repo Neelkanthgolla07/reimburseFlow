@@ -444,10 +444,17 @@ function claimsView() {
         async refreshClaims() {
             try {
                 const response = await fetch('/api/claims');
-                const data = await response.json();
-                this.claims = data;
-                this.filterClaims();
-                showNotification('Claims refreshed successfully', 'success');
+                const result = await response.json();
+                
+                if (result.success) {
+                    this.claims = result.data || [];
+                    this.filterClaims();
+                    showNotification(`Claims refreshed successfully (${result.count} claims from ${result.source})`, 'success');
+                } else {
+                    this.claims = result.data || [];
+                    this.filterClaims();
+                    showNotification('Claims loaded with warnings: ' + (result.warning || 'Unknown issue'), 'warning');
+                }
             } catch (error) {
                 showNotification('Error refreshing claims: ' + error.message, 'error');
             }

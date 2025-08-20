@@ -12,8 +12,9 @@ import io
 from dotenv import load_dotenv
 import config
 import firebase_admin
-from firebase_admin import credentials, auth
+from firebase_admin import credentials, auth, firestore, storage
 from functools import wraps
+import uuid
 
 # Load environment variables
 load_dotenv()
@@ -33,13 +34,133 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 try:
     if not firebase_admin._apps:
         cred = credentials.Certificate(config.FIREBASE_CREDENTIALS_PATH)
-        firebase_admin.initialize_app(cred)
+        firebase_admin.initialize_app(cred, {
+            'storageBucket': 'optimal-analogy-394213.firebasestorage.app'
+        })
     print("Firebase Admin SDK initialized successfully")
+    
+    # Initialize Firestore
+    db = firestore.client()
+    print("Firestore client initialized successfully")
+    
+    # Initialize Storage
+    bucket = storage.bucket()
+    print(f"Firebase Storage bucket initialized successfully: {bucket.name}")
+    
 except Exception as e:
-    print(f"Warning: Firebase Admin SDK initialization failed: {e}")
-    print("Firebase authentication features will not be available")
+    print(f"Warning: Firebase initialization failed: {e}")
+    print("Firebase features will not be available")
+    db = None
+    bucket = None
+
+class FirebaseStorageService:
+    """Service class for handling Firebase Storage and Firestore operations"""
+    
+    def __init__(self, db, bucket):
+        self.db = db
+        self.bucket = bucket
+    
+    def upload_file_to_storage(self, file_data, filename, content_type):
+        """Upload file to Firebase Storage and return download URL"""
+        try:
+            if not self.bucket:
+                raise Exception("Firebase Storage not initialized")
+            
+            # Generate unique filename
+            file_extension = filename.split('.')[-1] if '.' in filename else 'bin'
+            unique_filename = f"claims/{uuid.uuid4()}.{file_extension}"
+            
+            print(f"Uploading file to bucket: {self.bucket.name}")
+            print(f"File path: {unique_filename}")
+            print(f"File size: {len(file_data)} bytes")
+            print(f"Content type: {content_type}")
+            
+            # Create blob and upload
+            blob = self.bucket.blob(unique_filename)
+            blob.upload_from_string(
+                file_data,
+                content_type=content_type
+            )
+            
+            # Make the blob publicly readable (adjust based on your security requirements)
+            blob.make_public()
+            
+            print(f"File uploaded successfully to Storage: {unique_filename}")
+            print(f"Public URL: {blob.public_url}")
+            
+            return {
+                'success': True,
+                'file_url': blob.public_url,
+                'file_path': unique_filename,
+                'file_size': len(file_data)
+            }
+            
+        except Exception as e:
+            print(f"Storage upload error: {e}")
+            print(f"Bucket name: {self.bucket.name if self.bucket else 'None'}")
+            return {
+                'success': False,
+                'error': str(e)
+            }
+    
+    def save_claim_to_firestore(self, claim_data):
+        """Save claim data to Firestore"""
+        try:
+            if not self.db:
+                raise Exception("Firestore not initialized")
+            
+            # Add timestamp
+            claim_data['created_at'] = firestore.SERVER_TIMESTAMP
+            claim_data['updated_at'] = firestore.SERVER_TIMESTAMP
+            
+            # Save to Firestore
+            doc_ref = self.db.collection('reimbursement_claims').add(claim_data)
+            document_id = doc_ref[1].id
+            
+            print(f"Claim saved to Firestore with ID: {document_id}")
+            return {
+                'success': True,
+                'document_id': document_id
+            }
+            
+        except Exception as e:
+            print(f"Firestore save error: {e}")
+            return {
+                'success': False,
+                'error': str(e)
+            }
+    
+    def get_claims_from_firestore(self, user_email=None):
+        """Retrieve claims from Firestore"""
+        try:
+            if not self.db:
+                raise Exception("Firestore not initialized")
+            
+            query = self.db.collection('reimbursement_claims')
+            
+            if user_email:
+                query = query.where('employee_details.employee_email', '==', user_email)
+            
+            docs = query.order_by('created_at', direction=firestore.Query.DESCENDING).stream()
+            
+            claims = []
+            for doc in docs:
+                claim_data = doc.to_dict()
+                claim_data['id'] = doc.id
+                claims.append(claim_data)
+            
+            return claims
+            
+        except Exception as e:
+            print(f"Firestore retrieval error: {e}")
+            return []
+
+# Initialize Firebase services
+firebase_service = FirebaseStorageService(db, bucket) if db and bucket else None
 
 # Configure Gemini AI
+genai.configure(api_key=config.GEMINI_API_KEY)
+model = genai.GenerativeModel('gemini-2.0-flash-exp')
 genai.configure(api_key=config.GEMINI_API_KEY)
 model = genai.GenerativeModel('gemini-2.5-flash')
 
@@ -696,30 +817,33 @@ def process_bill():
 @login_required
 def submit_claim():
     try:
+        # Check if Firebase is available
+        if not firebase_service:
+            return jsonify({
+                "success": False,
+                "error": "Firebase services not available. Please check configuration."
+            }), 500
+        
         # Get form data
         form_data = request.form.to_dict()
+        
+        # Get user info from session
+        user_info = session.get('user', {})
+        employee_details = session.get('employee_details', {})
         
         # Get transaction count
         transaction_count = int(form_data.get('transaction_count', 1))
         
-        # Parse transactions
+        # Parse transactions and upload files
         transactions = []
         total_amount = 0
         
         for i in range(transaction_count):
             transaction = {}
-            bill_file = None
             
             # Get transaction data
             for key in ['bill_date', 'bill_number', 'transaction_category', 'purpose', 'amount', 'product', 'cluster', 'remarks']:
                 transaction[key] = form_data.get(f'transaction_{i}_{key}', '')
-            
-            # Get bill file if uploaded
-            bill_file_key = f'transaction_{i}_bill'
-            if bill_file_key in request.files:
-                file = request.files[bill_file_key]
-                if file and file.filename and allowed_file(file.filename):
-                    bill_file = file.read()
             
             # Convert amount to float
             try:
@@ -728,91 +852,264 @@ def submit_claim():
             except (ValueError, TypeError):
                 transaction['amount'] = 0
             
-            # Add bill file data
-            transaction['bill_file'] = bill_file
+            # Handle bill file upload
+            bill_file_key = f'transaction_{i}_bill'
+            if bill_file_key in request.files:
+                file = request.files[bill_file_key]
+                if file and file.filename and allowed_file(file.filename):
+                    try:
+                        # Read file data
+                        file_data = file.read()
+                        
+                        # Determine content type
+                        content_type = file.content_type or 'application/octet-stream'
+                        
+                        # Upload to Firebase Storage
+                        upload_result = firebase_service.upload_file_to_storage(
+                            file_data, 
+                            file.filename, 
+                            content_type
+                        )
+                        
+                        if upload_result['success']:
+                            transaction['bill_file_url'] = upload_result['file_url']
+                            transaction['bill_file_path'] = upload_result['file_path']
+                            transaction['bill_file_size'] = upload_result['file_size']
+                            transaction['bill_file_name'] = file.filename
+                            transaction['bill_file_type'] = content_type
+                            
+                            # Extract bill details using OCR
+                            try:
+                                extracted_details = processor.extract_bill_details(file_data, file.filename)
+                                transaction['extracted_details'] = extracted_details
+                                print(f"OCR extraction completed for transaction {i}")
+                            except Exception as e:
+                                print(f"OCR extraction failed for transaction {i}: {e}")
+                                transaction['extracted_details'] = None
+                        else:
+                            return jsonify({
+                                "success": False,
+                                "error": f"Failed to upload file for transaction {i+1}: {upload_result['error']}"
+                            }), 500
+                            
+                    except Exception as e:
+                        return jsonify({
+                            "success": False,
+                            "error": f"Error processing file for transaction {i+1}: {str(e)}"
+                        }), 500
+            
             transactions.append(transaction)
         
-        # Create claim data structure
+        # Create comprehensive claim data structure
         claim_data = {
-            'employee_name': form_data.get('employee_name', ''),
-            'department': form_data.get('department', ''),
-            'hod': form_data.get('hod', ''),
-            'hod_email': form_data.get('hod_email', ''),
-            'cc_emails': form_data.get('cc_emails', ''),
-            'payment_mode': form_data.get('payment_mode', 'Bank Transfer'),
+            'claim_id': f"CLAIM_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{str(uuid.uuid4())[:8].upper()}",
+            'employee_details': {
+                'employee_name': form_data.get('employee_name', ''),
+                'employee_email': user_info.get('email', ''),
+                'employee_id': employee_details.get('employee_id', ''),
+                'department': form_data.get('department', ''),
+                'team': employee_details.get('team', ''),
+                'hod_name': form_data.get('hod', ''),
+                'hod_email': form_data.get('hod_email', ''),
+                'phone': employee_details.get('phone', ''),
+                'submitted_by_uid': user_info.get('uid', '')
+            },
+            'form_details': {
+                'cc_emails': form_data.get('cc_emails', '').split(',') if form_data.get('cc_emails') else [],
+                'payment_mode': form_data.get('payment_mode', 'Bank Transfer'),
+                'total_amount': total_amount,
+                'transaction_count': transaction_count,
+                'currency': 'INR'
+            },
             'transactions': transactions,
-            'total_amount': total_amount,
-            'transaction_count': transaction_count,
-            'submission_date': datetime.now().isoformat(),
-            'status': 'Pending',
-            'submitted_by': session.get('user', {}).get('email', 'Unknown')
+            'status': {
+                'current_status': 'pending',
+                'submission_date': datetime.now().isoformat(),
+                'last_updated': datetime.now().isoformat(),
+                'approval_history': []
+            },
+            'metadata': {
+                'submitted_by': user_info.get('email', 'Unknown'),
+                'submitted_from': 'web_app',
+                'ip_address': request.remote_addr,
+                'user_agent': request.user_agent.string
+            }
         }
         
-        # Process each transaction with OCR if bill is provided
-        for i, transaction in enumerate(transactions):
-            if transaction.get('bill_file'):
-                try:
-                    extracted_details = processor.extract_bill_details(transaction['bill_file'])
-                    transaction['extracted_details'] = extracted_details
-                except Exception as e:
-                    print(f"Error extracting details for transaction {i}: {e}")
-                    transaction['extracted_details'] = None
-                
-                # Remove the binary data before saving
-                transaction['bill_file'] = f"transaction_{i}_bill.jpg"  # Just store filename reference
+        # Save to Firestore
+        save_result = firebase_service.save_claim_to_firestore(claim_data)
         
-        # Generate claim ID
-        import uuid
-        claim_id = f"CLAIM_{datetime.now().strftime('%Y%m%d')}_{str(uuid.uuid4())[:8].upper()}"
-        claim_data['claim_id'] = claim_id
-        
-        # Save claim
-        processor.processed_claims.append(claim_data)
-        processor.save_claims()
-        
-        return jsonify({
-            "success": True,
-            "data": {
-                "claim_id": claim_id,
-                "total_amount": total_amount,
-                "transaction_count": transaction_count,
-                "status": "Submitted successfully"
-            }
-        })
+        if save_result['success']:
+            # Also save to local JSON for backward compatibility (optional)
+            try:
+                processor.processed_claims.append(claim_data)
+                processor.save_claims()
+            except Exception as e:
+                print(f"Warning: Failed to save to local JSON: {e}")
+            
+            return jsonify({
+                "success": True,
+                "data": {
+                    "claim_id": claim_data['claim_id'],
+                    "document_id": save_result['document_id'],
+                    "total_amount": total_amount,
+                    "transaction_count": transaction_count,
+                    "status": "Submitted successfully to Firebase"
+                }
+            })
+        else:
+            return jsonify({
+                "success": False,
+                "error": f"Failed to save claim to database: {save_result['error']}"
+            }), 500
         
     except Exception as e:
         print(f"Submit claim error: {e}")
         return jsonify({
             "success": False,
-            "error": str(e)
-        }), 400
+            "error": f"An error occurred while submitting the claim: {str(e)}"
+        }), 500
 
 @app.route('/claims')
 @login_required
 def view_claims():
-    claims = processor.get_all_claims()
-    return render_template('claims.html', claims=claims)
+    """View claims page - uses Firebase if available, falls back to local storage"""
+    try:
+        if firebase_service:
+            # Get claims from Firestore
+            user_email = session.get('user', {}).get('email')
+            claims = firebase_service.get_claims_from_firestore(user_email)
+        else:
+            # Fallback to local storage
+            claims = processor.get_all_claims()
+        
+        return render_template('claims.html', claims=claims)
+    except Exception as e:
+        print(f"Error viewing claims: {e}")
+        # Fallback to local storage on error
+        claims = processor.get_all_claims()
+        return render_template('claims.html', claims=claims)
 
 @app.route('/api/claims')
 @login_required
 def api_claims():
-    claims = processor.get_all_claims()
-    return jsonify(claims)
+    """API endpoint to get all claims"""
+    try:
+        if firebase_service:
+            # Get claims from Firestore
+            user_email = session.get('user', {}).get('email')
+            claims = firebase_service.get_claims_from_firestore(user_email)
+        else:
+            # Fallback to local storage
+            claims = processor.get_all_claims()
+        
+        return jsonify({
+            'success': True,
+            'data': claims,
+            'count': len(claims),
+            'source': 'firebase' if firebase_service else 'local'
+        })
+    except Exception as e:
+        print(f"Error getting claims: {e}")
+        # Fallback to local storage on error
+        claims = processor.get_all_claims()
+        return jsonify({
+            'success': True,
+            'data': claims,
+            'count': len(claims),
+            'source': 'local_fallback',
+            'warning': str(e)
+        })
 
 @app.route('/api/claims/<claim_id>')
 @login_required
 def api_claim_detail(claim_id):
-    claim = processor.get_claim_by_id(claim_id)
-    if claim:
-        return jsonify(claim)
-    return jsonify({"error": "Claim not found"}), 404
+    """API endpoint to get specific claim details"""
+    try:
+        if firebase_service and firebase_service.db:
+            # Get from Firestore
+            doc_ref = firebase_service.db.collection('reimbursement_claims').document(claim_id)
+            doc = doc_ref.get()
+            
+            if doc.exists:
+                claim_data = doc.to_dict()
+                claim_data['id'] = doc.id
+                return jsonify({
+                    'success': True,
+                    'data': claim_data
+                })
+            else:
+                return jsonify({
+                    'success': False,
+                    'error': 'Claim not found in Firebase'
+                }), 404
+        else:
+            # Fallback to local storage
+            claim = processor.get_claim_by_id(claim_id)
+            if claim:
+                return jsonify({
+                    'success': True,
+                    'data': claim
+                })
+            return jsonify({
+                'success': False,
+                'error': 'Claim not found'
+            }), 404
+            
+    except Exception as e:
+        print(f"Error getting claim details: {e}")
+        # Try local storage as fallback
+        claim = processor.get_claim_by_id(claim_id)
+        if claim:
+            return jsonify({
+                'success': True,
+                'data': claim,
+                'source': 'local_fallback'
+            })
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
 
 @app.route('/api/claims/<claim_id>', methods=['DELETE'])
 @login_required
 def api_delete_claim(claim_id):
-    if processor.delete_claim(claim_id):
-        return jsonify({"success": True, "message": "Claim deleted successfully"})
-    return jsonify({"error": "Claim not found"}), 404
+    """API endpoint to delete a claim"""
+    try:
+        if firebase_service and firebase_service.db:
+            # Delete from Firestore
+            doc_ref = firebase_service.db.collection('reimbursement_claims').document(claim_id)
+            doc = doc_ref.get()
+            
+            if doc.exists:
+                doc_ref.delete()
+                return jsonify({
+                    'success': True,
+                    'message': 'Claim deleted successfully from Firebase'
+                })
+            else:
+                return jsonify({
+                    'success': False,
+                    'error': 'Claim not found in Firebase'
+                }), 404
+        else:
+            # Fallback to local storage
+            if processor.delete_claim(claim_id):
+                return jsonify({
+                    'success': True,
+                    'message': 'Claim deleted successfully'
+                })
+            return jsonify({
+                'success': False,
+                'error': 'Claim not found'
+            }), 404
+            
+    except Exception as e:
+        print(f"Error deleting claim: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5001)

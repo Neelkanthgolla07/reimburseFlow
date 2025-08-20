@@ -1,1 +1,90 @@
-[]
+[
+  {
+    "claim_id": "CLAIM_20250820_160923_AD2C01DA",
+    "employee_details": {
+      "employee_name": "neelkanth",
+      "employee_email": "neelkanth.golla@gmail.com",
+      "employee_id": "101",
+      "department": "Finance",
+      "team": "Team onePiece",
+      "hod_name": "rohit",
+      "hod_email": "gollaneelkanth@gmail.com",
+      "phone": "",
+      "submitted_by_uid": "EAnKB68eFtXlg5ogrlRFNndDLWw1"
+    },
+    "form_details": {
+      "cc_emails": [],
+      "payment_mode": "Bank Transfer",
+      "total_amount": 414.0,
+      "transaction_count": 2,
+      "currency": "INR"
+    },
+    "transactions": [
+      {
+        "bill_date": "2024-04-20",
+        "bill_number": "1101",
+        "transaction_category": "Food",
+        "purpose": "Food Delivery",
+        "amount": 207.0,
+        "product": "Marketing Campaign",
+        "cluster": "Bangalore Cluster",
+        "remarks": "klndg",
+        "bill_file_url": "https://storage.googleapis.com/optimal-analogy-394213.firebasestorage.app/claims/b54cde38-2a21-40d7-8da7-a769aa97815b.pdf",
+        "bill_file_path": "claims/b54cde38-2a21-40d7-8da7-a769aa97815b.pdf",
+        "bill_file_size": 118985,
+        "bill_file_name": "WhatsApp Image 2024-05-23 at 3.14.30 PM-compressed (1) - Mallikarjun Bytigeri.pdf",
+        "bill_file_type": "application/pdf",
+        "extracted_details": {
+          "bill_number": "1101",
+          "bill_date": "2024-04-20",
+          "vendor_name": "Mehfil",
+          "transaction_category": "Food",
+          "purpose": "Food Delivery",
+          "amount": 207.0,
+          "currency": "INR",
+          "product": "Chicken Biryani",
+          "cluster_location": "Hyderabad, India",
+          "confidence_score": 98
+        }
+      },
+      {
+        "bill_date": "2024-04-20",
+        "bill_number": "1101",
+        "transaction_category": "Food",
+        "purpose": "Food Delivery",
+        "amount": 207.0,
+        "product": "Marketing Campaign",
+        "cluster": "Hyderabad Cluster",
+        "remarks": "olewbjf",
+        "bill_file_url": "https://storage.googleapis.com/optimal-analogy-394213.firebasestorage.app/claims/092f6cc2-09e2-4ee8-9193-a5449f6afc37.png",
+        "bill_file_path": "claims/092f6cc2-09e2-4ee8-9193-a5449f6afc37.png",
+        "bill_file_size": 356326,
+        "bill_file_name": "Screenshot 2025-08-18 140815.png",
+        "bill_file_type": "image/png",
+        "extracted_details": {
+          "bill_number": "1101",
+          "bill_date": "2024-04-20",
+          "vendor_name": "Mehfil",
+          "transaction_category": "Food",
+          "purpose": "Food Delivery",
+          "amount": 207.0,
+          "currency": "INR",
+          "product": "Chicken Biryani",
+          "cluster_location": "Hyderabad",
+          "confidence_score": 98
+        }
+      }
+    ],
+    "status": {
+      "current_status": "pending",
+      "submission_date": "2025-08-20T16:09:23.913391",
+      "last_updated": "2025-08-20T16:09:23.913391",
+      "approval_history": []
+    },
+    "metadata": {
+      "submitted_by": "neelkanth.golla@gmail.com",
+      "submitted_from": "web_app",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+    },
+    "created_at": 
