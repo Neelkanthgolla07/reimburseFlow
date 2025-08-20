@@ -48,16 +48,32 @@
                         </h1>
                     </div>
                     <div class="hidden md:ml-6 md:flex md:space-x-8">
-                        <a href="/" class="text-white hover:text-gray-200 px-3 py-2 rounded-md text-sm font-medium transition duration-150">
-                            Submit Claim
-                        </a>
-                        <a href="/claims" class="text-white hover:text-gray-200 px-3 py-2 rounded-md text-sm font-medium transition duration-150">
-                            View Claims
-                        </a>
+                        <!-- Navigation buttons removed as requested -->
                     </div>
                 </div>
                 <div class="flex items-center">
-                    <span class="text-white text-sm">NxtWave Reimbursement System</span>
+                    {% if session.user %}
+                        <div class="flex items-center space-x-4">
+                            <div class="flex items-center space-x-2">
+                                {% if session.user.picture %}
+                                    <img src="{{ session.user.picture }}" alt="Profile" class="w-8 h-8 rounded-full">
+                                {% endif %}
+                                <span class="text-white text-sm">{{ session.user.name or session.user.email }}</span>
+                            </div>
+                            <a href="/dashboard" class="text-white hover:text-gray-200 px-3 py-2 rounded-md text-sm font-medium transition duration-150">
+                                Dashboard
+                            </a>
+                            <a href="/logout" class="bg-white text-purple-600 hover:bg-gray-100 px-3 py-2 rounded-md text-sm font-medium transition duration-150">
+                                Logout
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="flex items-center space-x-4">
+                            <a href="/login" class="bg-white text-purple-600 hover:bg-gray-100 px-4 py-2 rounded-md text-sm font-medium transition duration-150">
+                                Login
+                            </a>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

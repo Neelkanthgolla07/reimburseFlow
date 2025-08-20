@@ -1,0 +1,102 @@
+Employee ID,Employee Name,Employee Email ID,Department Name,Team Name,Reporting Person - 1 Name,Reporting Person - 1 Email,Reporting Person - 2 Name,Reporting Person - 2 Email,Reporting Person - 3 Name,Reporting Person - 3 Email,Phone Number of Employee
+1,Raj Singh,raj.singh@nxtwave.tech,Placement Success Management,Team Omega,Priya Sharma,priya.sharma@nxtwave.tech,,,,,9844933137
+2,Kiran Das,kiran.das@nxtwave.co.in,Pre-Sales,Team Beta,Priya Verma,priya.verma@nxtwave.co.in,Priya Iyer,priya.iyer@nxtwave.in,,,9619755223
+3,Ravi Yadav,ravi.yadav@nxtwave.co.in,Pre-Sales,Team Delta,Sneha Sharma,sneha.sharma@nxtwave.in,,,,,9877718885
+4,Priya Sharma,priya.sharma@nxtwave.tech,Product,Team Delta,Anusha Verma,anusha.verma@nxtwave.tech,,,,,9347108031
+5,Meena Yadav,meena.yadav@nxtwave.in,Placement Success Management,Team Omega,Raj Yadav,raj.yadav@nxtwave.tech,Vivek Yadav,vivek.yadav@nxtwave.co.in,,,9894082923
+6,Divya Reddy,divya.reddy@nxtwave.in,Revenue Operations,Team Omega,Divya Yadav,divya.yadav@nxtwave.co.in,,,,,9765334692
+7,Kiran Das,kiran.das@nxtwave.tech,Engineering,Team Gamma,Priya Yadav,priya.yadav@nxtwave.in,Priya Singh,priya.singh@nxtwave.tech,,,9839712618
+8,Anusha Nair,anusha.nair@nxtwave.tech,Engineering,Team Omega,Kiran Das,kiran.das@nxtwave.co.in,,,,,9904037498
+9,Anusha Kumar,anusha.kumar@nxtwave.co.in,Revenue Operations,Team Beta,Priya Yadav,priya.yadav@nxtwave.in,,,,,9624109041
+10,Anil Yadav,anil.yadav@nxtwave.co.in,Product,Team Gamma,Priya Iyer,priya.iyer@nxtwave.tech,,,,,9528805348
+11,Raj Das,raj.das@nxtwave.tech,Pre-Sales,Team Gamma,Anil Das,anil.das@nxtwave.in,Raj Patel,raj.patel@nxtwave.in,,,9464245918
+12,Divya Patel,divya.patel@nxtwave.tech,Revenue Operations,Team Alpha,Vivek Das,vivek.das@nxtwave.tech,Vivek Reddy,vivek.reddy@nxtwave.tech,,,9648594127
+13,Vivek Reddy,vivek.reddy@nxtwave.tech,Product,Team Gamma,Kiran Patel,kiran.patel@nxtwave.in,,,,,9528872005
+14,Anusha Patel,anusha.patel@nxtwave.tech,Sales,Team Gamma,Kiran Singh,kiran.singh@nxtwave.co.in,Divya Yadav,divya.yadav@nxtwave.in,Kiran Kumar,kiran.kumar@nxtwave.in,9434110821
+15,Anusha Singh,anusha.singh@nxtwave.in,Sales,Team Delta,Raj Sharma,raj.sharma@nxtwave.co.in,Anil Kumar,anil.kumar@nxtwave.in,Ravi Verma,ravi.verma@nxtwave.tech,9309225254
+16,Vivek Reddy,vivek.reddy@nxtwave.tech,Engineering,Team Gamma,Anusha Verma,anusha.verma@nxtwave.tech,,,,,9375946211
+17,Divya Nair,divya.nair@nxtwave.tech,Revenue Operations,Team Gamma,Priya Sharma,priya.sharma@nxtwave.co.in,Vivek Iyer,vivek.iyer@nxtwave.in,,,9093126613
+18,Ravi Verma,ravi.verma@nxtwave.in,Pre-Sales,Team Gamma,Meena Yadav,meena.yadav@nxtwave.co.in,Ravi Sharma,ravi.sharma@nxtwave.tech,Sneha Sharma,sneha.sharma@nxtwave.co.in,9592759252
+19,Meena Das,meena.das@nxtwave.in,Revenue Operations,Team Omega,Raj Iyer,raj.iyer@nxtwave.tech,Ravi Yadav,ravi.yadav@nxtwave.co.in,Vivek Kumar,vivek.kumar@nxtwave.in,9825508366
+20,Sneha Singh,sneha.singh@nxtwave.in,Placement Success Management,Team Beta,Vivek Verma,vivek.verma@nxtwave.tech,Raj Nair,raj.nair@nxtwave.in,Priya Sharma,priya.sharma@nxtwave.in,9250049839
+21,Meena Yadav,meena.yadav@nxtwave.tech,Placement Success Management,Team Delta,Raj Iyer,raj.iyer@nxtwave.tech,Divya Yadav,divya.yadav@nxtwave.in,Anusha Reddy,anusha.reddy@nxtwave.co.in,9213595194
+22,Kiran Nair,kiran.nair@nxtwave.in,Engineering,Team Beta,Priya Verma,priya.verma@nxtwave.co.in,Anil Nair,anil.nair@nxtwave.in,Kiran Yadav,kiran.yadav@nxtwave.tech,9055276739
+23,Anusha Sharma,anusha.sharma@nxtwave.in,Revenue Operations,Team Omega,Anusha Sharma,anusha.sharma@nxtwave.in,Vivek Iyer,vivek.iyer@nxtwave.in,,,9775636852
+24,Anil Kumar,anil.kumar@nxtwave.in,HR,Team Gamma,Ravi Das,ravi.das@nxtwave.co.in,,,,,9718728692
+25,Ravi Reddy,ravi.reddy@nxtwave.tech,Pre-Sales,Team Beta,Sneha Singh,sneha.singh@nxtwave.tech,,,,,9128596078
+26,Ravi Yadav,ravi.yadav@nxtwave.tech,HR,Team Omega,Anusha Verma,anusha.verma@nxtwave.in,Raj Nair,raj.nair@nxtwave.in,Anil Reddy,anil.reddy@nxtwave.in,9612736452
+27,Vivek Patel,vivek.patel@nxtwave.tech,Revenue Operations,Team Delta,Kiran Patel,kiran.patel@nxtwave.in,Sneha Iyer,sneha.iyer@nxtwave.in,Sneha Nair,sneha.nair@nxtwave.tech,9489413869
+28,Sneha Nair,sneha.nair@nxtwave.co.in,Engineering,Team Beta,Anil Kumar,anil.kumar@nxtwave.co.in,Priya Patel,priya.patel@nxtwave.co.in,,,9209587857
+29,Vivek Verma,vivek.verma@nxtwave.co.in,Pre-Sales,Team Alpha,Anusha Iyer,anusha.iyer@nxtwave.tech,Priya Verma,priya.verma@nxtwave.in,,,9224709110
+30,Kiran Das,kiran.das@nxtwave.tech,Engineering,Team Alpha,Anusha Iyer,anusha.iyer@nxtwave.in,,,,,9688479493
+31,Raj Kumar,raj.kumar@nxtwave.tech,Placement Success Management,Team Beta,Vivek Kumar,vivek.kumar@nxtwave.co.in,,,,,9949981659
+32,Raj Singh,raj.singh@nxtwave.in,Sales,Team Delta,Kiran Das,kiran.das@nxtwave.in,Sneha Kumar,sneha.kumar@nxtwave.tech,Anusha Nair,anusha.nair@nxtwave.co.in,9358948424
+33,Vivek Patel,vivek.patel@nxtwave.co.in,Revenue Operations,Team Omega,Priya Verma,priya.verma@nxtwave.tech,Ravi Iyer,ravi.iyer@nxtwave.co.in,Kiran Das,kiran.das@nxtwave.in,9451329161
+34,Raj Patel,raj.patel@nxtwave.co.in,Revenue Operations,Team Omega,Anusha Kumar,anusha.kumar@nxtwave.co.in,Kiran Reddy,kiran.reddy@nxtwave.in,,,9623408331
+35,Sneha Verma,sneha.verma@nxtwave.tech,Pre-Sales,Team Omega,Kiran Patel,kiran.patel@nxtwave.in,Anusha Iyer,anusha.iyer@nxtwave.tech,Kiran Kumar,kiran.kumar@nxtwave.in,9722762362
+36,Divya Yadav,divya.yadav@nxtwave.in,Pre-Sales,Team Alpha,Meena Das,meena.das@nxtwave.in,Kiran Iyer,kiran.iyer@nxtwave.tech,Meena Kumar,meena.kumar@nxtwave.in,9673871999
+37,Ravi Das,ravi.das@nxtwave.in,Sales,Team Delta,Sneha Iyer,sneha.iyer@nxtwave.in,,,,,9169361147
+38,Priya Das,priya.das@nxtwave.tech,Pre-Sales,Team Delta,Ravi Iyer,ravi.iyer@nxtwave.co.in,Ravi Das,ravi.das@nxtwave.co.in,,,9525706318
+39,Kiran Yadav,kiran.yadav@nxtwave.co.in,Sales,Team Delta,Meena Iyer,meena.iyer@nxtwave.co.in,Priya Das,priya.das@nxtwave.co.in,Anil Iyer,anil.iyer@nxtwave.tech,9844317349
+40,Meena Patel,meena.patel@nxtwave.in,Placement Success Management,Team Gamma,Anusha Kumar,anusha.kumar@nxtwave.in,,,,,9804177268
+41,Meena Patel,meena.patel@nxtwave.tech,Product,Team Alpha,Vivek Singh,vivek.singh@nxtwave.co.in,,,,,9309642611
+42,Anusha Reddy,anusha.reddy@nxtwave.co.in,Engineering,Team Delta,Anil Das,anil.das@nxtwave.tech,,,,,9210662362
+43,Kiran Kumar,kiran.kumar@nxtwave.tech,Placement Success Management,Team Delta,Anusha Verma,anusha.verma@nxtwave.tech,Priya Nair,priya.nair@nxtwave.tech,Priya Patel,priya.patel@nxtwave.co.in,9999903340
+44,Divya Singh,divya.singh@nxtwave.in,Engineering,Team Gamma,Kiran Iyer,kiran.iyer@nxtwave.co.in,Ravi Kumar,ravi.kumar@nxtwave.co.in,,,9919258084
+45,Sneha Reddy,sneha.reddy@nxtwave.tech,Engineering,Team Delta,Anusha Yadav,anusha.yadav@nxtwave.in,,,,,9086549504
+46,Anusha Singh,anusha.singh@nxtwave.in,Engineering,Team Delta,Anil Reddy,anil.reddy@nxtwave.tech,,,,,9618760750
+47,Anusha Patel,anusha.patel@nxtwave.tech,Sales,Team Delta,Priya Das,priya.das@nxtwave.tech,,,,,9530838115
+48,Priya Das,priya.das@nxtwave.in,Placement Success Management,Team Gamma,Ravi Reddy,ravi.reddy@nxtwave.tech,Kiran Reddy,kiran.reddy@nxtwave.tech,Kiran Iyer,kiran.iyer@nxtwave.tech,9945295561
+49,Anusha Verma,anusha.verma@nxtwave.in,Engineering,Team Alpha,Kiran Yadav,kiran.yadav@nxtwave.tech,Kiran Yadav,kiran.yadav@nxtwave.co.in,Raj Nair,raj.nair@nxtwave.tech,9550031581
+50,Sneha Sharma,sneha.sharma@nxtwave.tech,Product,Team Alpha,Anil Nair,anil.nair@nxtwave.tech,,,,,9948994309
+51,Kiran Nair,kiran.nair@nxtwave.tech,Placement Success Management,Team Delta,Divya Nair,divya.nair@nxtwave.in,Anil Sharma,anil.sharma@nxtwave.in,Kiran Sharma,kiran.sharma@nxtwave.in,9416545986
+52,Priya Singh,priya.singh@nxtwave.co.in,Product,Team Gamma,Ravi Singh,ravi.singh@nxtwave.tech,,,,,9914476027
+53,Raj Kumar,raj.kumar@nxtwave.co.in,Product,Team Gamma,Vivek Kumar,vivek.kumar@nxtwave.in,,,,,9551652255
+54,Meena Singh,meena.singh@nxtwave.tech,Engineering,Team Gamma,Meena Yadav,meena.yadav@nxtwave.co.in,,,,,9297293126
+55,Anusha Nair,anusha.nair@nxtwave.tech,Revenue Operations,Team Beta,Sneha Verma,sneha.verma@nxtwave.tech,Ravi Yadav,ravi.yadav@nxtwave.in,Divya Sharma,divya.sharma@nxtwave.tech,9859831960
+56,Meena Sharma,meena.sharma@nxtwave.co.in,Pre-Sales,Team Alpha,Vivek Das,vivek.das@nxtwave.in,Kiran Yadav,kiran.yadav@nxtwave.co.in,,,9794399619
+57,Ravi Singh,ravi.singh@nxtwave.tech,Pre-Sales,Team Gamma,Ravi Singh,ravi.singh@nxtwave.co.in,Raj Kumar,raj.kumar@nxtwave.in,Raj Patel,raj.patel@nxtwave.co.in,9366405796
+58,Divya Kumar,divya.kumar@nxtwave.tech,Placement Success Management,Team Delta,Raj Reddy,raj.reddy@nxtwave.in,,,,,9518539390
+59,Raj Singh,raj.singh@nxtwave.co.in,Pre-Sales,Team Alpha,Anusha Sharma,anusha.sharma@nxtwave.co.in,Anil Singh,anil.singh@nxtwave.co.in,Divya Patel,divya.patel@nxtwave.in,9664346680
+60,Kiran Reddy,kiran.reddy@nxtwave.co.in,Product,Team Gamma,Raj Nair,raj.nair@nxtwave.tech,Sneha Yadav,sneha.yadav@nxtwave.in,,,9674807103
+61,Divya Yadav,divya.yadav@nxtwave.tech,Sales,Team Alpha,Anil Kumar,anil.kumar@nxtwave.in,Ravi Singh,ravi.singh@nxtwave.tech,Vivek Reddy,vivek.reddy@nxtwave.in,9283968350
+62,Anusha Sharma,anusha.sharma@nxtwave.co.in,Pre-Sales,Team Omega,Divya Patel,divya.patel@nxtwave.tech,Vivek Verma,vivek.verma@nxtwave.tech,Divya Patel,divya.patel@nxtwave.co.in,9850233436
+63,Divya Patel,divya.patel@nxtwave.tech,Revenue Operations,Team Alpha,Kiran Reddy,kiran.reddy@nxtwave.co.in,Kiran Singh,kiran.singh@nxtwave.tech,Priya Nair,priya.nair@nxtwave.in,9700017134
+64,Priya Patel,priya.patel@nxtwave.tech,Revenue Operations,Team Beta,Priya Iyer,priya.iyer@nxtwave.in,,,,,9292269744
+65,Meena Singh,meena.singh@nxtwave.co.in,Product,Team Beta,Kiran Yadav,kiran.yadav@nxtwave.tech,,,,,9122274617
+66,Priya Singh,priya.singh@nxtwave.co.in,Product,Team Beta,Ravi Reddy,ravi.reddy@nxtwave.in,,,,,9369085870
+67,Anil Nair,anil.nair@nxtwave.in,Engineering,Team Beta,Divya Kumar,divya.kumar@nxtwave.in,,,,,9045768969
+68,Vivek Singh,vivek.singh@nxtwave.in,Engineering,Team Delta,Anil Verma,anil.verma@nxtwave.co.in,,,,,9461542121
+69,Anil Sharma,anil.sharma@nxtwave.in,Engineering,Team Omega,Anusha Sharma,anusha.sharma@nxtwave.tech,Meena Patel,meena.patel@nxtwave.tech,Anil Yadav,anil.yadav@nxtwave.in,9362617549
+70,Ravi Nair,ravi.nair@nxtwave.co.in,Placement Success Management,Team Gamma,Anil Kumar,anil.kumar@nxtwave.tech,Raj Sharma,raj.sharma@nxtwave.co.in,,,9487515884
+71,Ravi Singh,ravi.singh@nxtwave.in,Pre-Sales,Team Delta,Anusha Nair,anusha.nair@nxtwave.tech,,,,,9739407755
+72,Sneha Patel,sneha.patel@nxtwave.co.in,Placement Success Management,Team Omega,Divya Yadav,divya.yadav@nxtwave.in,,,,,9539617777
+73,Sneha Yadav,sneha.yadav@nxtwave.co.in,Placement Success Management,Team Gamma,Kiran Reddy,kiran.reddy@nxtwave.in,Raj Reddy,raj.reddy@nxtwave.co.in,Divya Patel,divya.patel@nxtwave.in,9267190574
+74,Anusha Nair,anusha.nair@nxtwave.co.in,HR,Team Omega,Anusha Das,anusha.das@nxtwave.in,,,,,9935109171
+75,Anusha Nair,anusha.nair@nxtwave.co.in,Sales,Team Beta,Divya Iyer,divya.iyer@nxtwave.tech,Meena Das,meena.das@nxtwave.tech,,,9871355378
+76,Sneha Sharma,sneha.sharma@nxtwave.co.in,Revenue Operations,Team Alpha,Raj Yadav,raj.yadav@nxtwave.co.in,,,,,9994949203
+77,Divya Nair,divya.nair@nxtwave.in,Sales,Team Delta,Ravi Das,ravi.das@nxtwave.co.in,,,,,9895102018
+78,Raj Yadav,raj.yadav@nxtwave.tech,HR,Team Delta,Priya Nair,priya.nair@nxtwave.co.in,Anil Verma,anil.verma@nxtwave.in,,,9142449012
+79,Ravi Reddy,ravi.reddy@nxtwave.tech,Placement Success Management,Team Beta,Ravi Yadav,ravi.yadav@nxtwave.tech,Meena Patel,meena.patel@nxtwave.co.in,Vivek Kumar,vivek.kumar@nxtwave.in,9760579524
+80,Anusha Iyer,anusha.iyer@nxtwave.co.in,Placement Success Management,Team Omega,Divya Das,divya.das@nxtwave.co.in,,,,,9141187776
+81,Raj Patel,raj.patel@nxtwave.in,Pre-Sales,Team Gamma,Anil Das,anil.das@nxtwave.in,Priya Sharma,priya.sharma@nxtwave.in,,,9247099533
+82,Priya Iyer,priya.iyer@nxtwave.in,Product,Team Omega,Divya Iyer,divya.iyer@nxtwave.in,,,,,9316561631
+83,Anil Kumar,anil.kumar@nxtwave.in,Pre-Sales,Team Alpha,Sneha Verma,sneha.verma@nxtwave.co.in,Divya Kumar,divya.kumar@nxtwave.tech,Ravi Reddy,ravi.reddy@nxtwave.co.in,9262605008
+84,Anusha Das,anusha.das@nxtwave.in,Placement Success Management,Team Beta,Meena Patel,meena.patel@nxtwave.in,Anil Patel,anil.patel@nxtwave.tech,Sneha Nair,sneha.nair@nxtwave.co.in,9439811317
+85,Sneha Singh,sneha.singh@nxtwave.in,Revenue Operations,Team Alpha,Kiran Patel,kiran.patel@nxtwave.in,,,,,9514443893
+86,Sneha Reddy,sneha.reddy@nxtwave.tech,HR,Team Omega,Kiran Verma,kiran.verma@nxtwave.co.in,Anusha Sharma,anusha.sharma@nxtwave.co.in,Raj Iyer,raj.iyer@nxtwave.tech,9975857493
+87,Raj Patel,raj.patel@nxtwave.tech,Product,Team Gamma,Anil Kumar,anil.kumar@nxtwave.tech,,,,,9683558860
+88,Meena Patel,meena.patel@nxtwave.in,Pre-Sales,Team Alpha,Meena Singh,meena.singh@nxtwave.in,Anusha Verma,anusha.verma@nxtwave.in,Divya Sharma,divya.sharma@nxtwave.tech,9997428373
+89,Anil Sharma,anil.sharma@nxtwave.in,Placement Success Management,Team Omega,Raj Singh,raj.singh@nxtwave.in,Sneha Nair,sneha.nair@nxtwave.in,Meena Iyer,meena.iyer@nxtwave.co.in,9776906560
+90,Meena Singh,meena.singh@nxtwave.co.in,Sales,Team Omega,Priya Patel,priya.patel@nxtwave.tech,Divya Iyer,divya.iyer@nxtwave.in,,,9039285148
+91,Priya Nair,priya.nair@nxtwave.in,Product,Team Delta,Anusha Verma,anusha.verma@nxtwave.tech,,,,,9289588167
+92,Meena Nair,meena.nair@nxtwave.tech,Placement Success Management,Team Delta,Anil Singh,anil.singh@nxtwave.co.in,Kiran Kumar,kiran.kumar@nxtwave.co.in,Anil Sharma,anil.sharma@nxtwave.in,9010305579
+93,Anil Sharma,anil.sharma@nxtwave.co.in,HR,Team Alpha,Kiran Sharma,kiran.sharma@nxtwave.in,,,,,9842970575
+94,Ravi Reddy,ravi.reddy@nxtwave.tech,Pre-Sales,Team Alpha,Kiran Patel,kiran.patel@nxtwave.in,Anil Das,anil.das@nxtwave.in,,,9699454586
+95,Vivek Nair,vivek.nair@nxtwave.co.in,Sales,Team Alpha,Ravi Patel,ravi.patel@nxtwave.in,,,,,9197524857
+96,Raj Nair,raj.nair@nxtwave.co.in,Placement Success Management,Team Omega,Anil Das,anil.das@nxtwave.tech,,,,,9342437317
+97,Priya Reddy,priya.reddy@nxtwave.tech,Sales,Team Delta,Vivek Kumar,vivek.kumar@nxtwave.tech,Ravi Kumar,ravi.kumar@nxtwave.tech,Raj Verma,raj.verma@nxtwave.co.in,9443393391
+98,Vivek Yadav,vivek.yadav@nxtwave.co.in,Engineering,Team Delta,Anusha Yadav,anusha.yadav@nxtwave.co.in,,,,,9384804680
+99,Meena Sharma,meena.sharma@nxtwave.tech,Revenue Operations,Team Beta,Divya Yadav,divya.yadav@nxtwave.co.in,,,,,9347305284
+100,Priya Singh,priya.singh@nxtwave.in,Sales,Team Gamma,Kiran Sharma,kiran.sharma@nxtwave.co.in,Vivek Nair,vivek.nair@nxtwave.tech,,,9273003280
+101,neelkanth,neelkanth.golla@gmail.com,Finance,Team onePiece,rohit,gollaneelkanth@gmail.com,,,,,

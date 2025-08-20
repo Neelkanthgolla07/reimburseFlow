@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+
+{% block title %}Login - ReimburseFlow{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8">
+        <div>
+            <div class="mx-auto h-12 w-12 flex items-center justify-center rounded-full bg-purple-100">
+                <i class="fas fa-receipt text-purple-600 text-xl"></i>
+            </div>
+            <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                Sign in to ReimburseFlow
+            </h2>
+            <p class="mt-2 text-center text-sm text-gray-600">
+                Access your reimbursement portal
+            </p>
+        </div>
+        
+        <!-- Login Form -->
+        <div class="mt-8 space-y-6">
+            <div class="rounded-md shadow-sm">
+                <!-- Google Sign In Button -->
+                <button id="google-signin-btn" 
+                        class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-150 ease-in-out">
+                    <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                        <i class="fab fa-google text-red-200 group-hover:text-red-100"></i>
+                    </span>
+                    Sign in with Google
+                </button>
+            </div>
+            
+            <!-- Loading State -->
+            <div id="loading" class="hidden text-center">
+                <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+                <p class="mt-2 text-sm text-gray-600">Signing you in...</p>
+            </div>
+            
+            <!-- Error Message -->
+            <div id="error-message" class="hidden bg-red-50 border border-red-200 rounded-md p-4">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-exclamation-circle text-red-400"></i>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-medium text-red-800">
+                            Authentication Error
+                        </h3>
+                        <div class="mt-2 text-sm text-red-700">
+                            <p id="error-text">Something went wrong. Please try again.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Features -->
+        <div class="mt-8">
+            <div class="text-center">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Why ReimburseFlow?</h3>
+                <div class="grid grid-cols-1 gap-4 text-sm text-gray-600">
+                    <div class="flex items-center justify-center space-x-2">
+                        <i class="fas fa-zap text-purple-600"></i>
+                        <span>AI-powered receipt processing</span>
+                    </div>
+                    <div class="flex items-center justify-center space-x-2">
+                        <i class="fas fa-shield-alt text-purple-600"></i>
+                        <span>Secure document storage</span>
+                    </div>
+                    <div class="flex items-center justify-center space-x-2">
+                        <i class="fas fa-clock text-purple-600"></i>
+                        <span>Quick approval workflow</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Firebase SDK -->
+<script type="module">
+    // Import Firebase SDK
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
+    import { getAuth, GoogleAuthProvider, signInWithPopup } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
+
+    // Firebase configuration
+    const firebaseConfig = {{ firebase_config | tojson }};
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    // DOM elements
+    const signInBtn = document.getElementById('google-signin-btn');
+    const loading = document.getElementById('loading');
+    const errorMessage = document.getElementById('error-message');
+    const errorText = document.getElementById('error-text');
+
+    // Show error message
+    function showError(message) {
+        errorText.textContent = message;
+        errorMessage.classList.remove('hidden');
+        loading.classList.add('hidden');
+        signInBtn.disabled = false;
+        signInBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+    }
+
+    // Hide error message
+    function hideError() {
+        errorMessage.classList.add('hidden');
+    }
+
+    // Show loading state
+    function showLoading() {
+        loading.classList.remove('hidden');
+        signInBtn.disabled = true;
+        signInBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        hideError();
+    }
+
+    // Hide loading state
+    function hideLoading() {
+        loading.classList.add('hidden');
+        signInBtn.disabled = false;
+        signInBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+    }
+
+    // Google Sign In
+    signInBtn.addEventListener('click', async () => {
+        try {
+            showLoading();
+            
+            const result = await signInWithPopup(auth, provider);
+            const user = result.user;
+            
+            // Get the ID token
+            const idToken = await user.getIdToken();
+            
+            // Send the ID token to your backend
+            const response = await fetch('/login/callback', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    idToken: idToken
+                })
+            });
+            
+            const data = await response.json();
+            console.log('Server response:', data);
+            
+            if (data.success) {
+                // Redirect to main page
+                window.location.href = data.redirect_url;
+            } else {
+                console.error('Authentication failed:', data.error);
+                showError(data.error || 'Authentication failed');
+            }
+            
+        } catch (error) {
+            console.error('Sign in error:', error);
+            
+            // Handle specific Firebase Auth errors
+            let errorMessage = 'Authentication failed. Please try again.';
+            
+            if (error.code === 'auth/popup-closed-by-user') {
+                errorMessage = 'Sign-in was cancelled. Please try again.';
+            } else if (error.code === 'auth/popup-blocked') {
+                errorMessage = 'Popup was blocked. Please allow popups and try again.';
+            } else if (error.code === 'auth/cancelled-popup-request') {
+                errorMessage = 'Another sign-in attempt is in progress.';
+            } else if (error.code === 'auth/unauthorized-domain') {
+                errorMessage = 'This domain is not authorized for Firebase authentication.';
+            } else if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                errorMessage = 'Network error. Please check your connection and try again.';
+            } else if (error.message) {
+                errorMessage = `Error: ${error.message}`;
+            }
+            
+            showError(errorMessage);
+        }
+    });
+</script>
+{% endblock %}
